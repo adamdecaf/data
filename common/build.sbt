@@ -6,9 +6,8 @@ BannoSettings.settings
 
 resolvers += DefaultMavenRepository
 
-Specs2.settings
-
 libraryDependencies ++= Seq(
   "org.joda" % "joda-convert" % "1.6",
-  "joda-time" % "joda-time" % "2.4"
+  "joda-time" % "joda-time" % "2.4",
+  "org.apache.commons" % "commons-io" % "1.3.2"
 )
