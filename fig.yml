@@ -9,6 +9,6 @@ postgres:
     POSTGRES_PASSWORD: password
 
 redis:
-  image: redis:2.8.18
+  image: redis:2.8.17
   ports:
     - "6379:6379"
