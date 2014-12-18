@@ -1,7 +1,5 @@
 import com.banno._
 
-name := "data-common"
-
 BannoSettings.settings
 
 resolvers += DefaultMavenRepository

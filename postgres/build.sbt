@@ -1,7 +1,5 @@
 import com.banno._
 
-name := "data-postgres"
-
 Specs2.settings
 
 libraryDependencies ++= Seq(
