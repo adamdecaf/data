@@ -33,24 +33,27 @@ trait ApacheHttpClient extends HttpClient {
       config.build()
     }
 
+    builder.setUserAgent(config.getString("http.user-agent"))
+
+    // needed?
+    // setDefaultSocketConfig(SocketConfig)
+    // setConnectionTimeToLive(connTimeToLive, connTimeToLiveTimeUnit)
+    // setConnectionReuseStrategy(ConnectionReuseStrategy)
+    // setKeepAliveStrategy(ConnectionKeepAliveStrategy)
+    // setRetryHandler(HttpRequestRetryHandler)
+
+    // later
+    // setSslcontext
+    // setSSLSocketFactory
+
+    // later
+    c// setTargetAuthenticationStrategy(AuthenticationStrategy)
+    // setProxyAuthenticationStrategy(AuthenticationStrategy)
+
     new Client(builder.build())
   }
 
   protected class Client(underlying: CloseableHttpClient) extends Http {
     def GET: HttpRequestBuilder = new ApacheHttpClientRequestBuilder()
   }
-
-  // todo
-  // setSslcontext
-  // setSSLSocketFactory
-  // setDefaultSocketConfig(SocketConfig)
-  // setDefaultConnectionConfig(ConnectionConfig)
-  // setConnectionTimeToLive(connTimeToLive, connTimeToLiveTimeUnit)
-  // setConnectionReuseStrategy(ConnectionReuseStrategy)
-  // setKeepAliveStrategy(ConnectionKeepAliveStrategy)
-  // setTargetAuthenticationStrategy(AuthenticationStrategy)
-  // setProxyAuthenticationStrategy(AuthenticationStrategy)
-  // setUserAgent(string)
-  // setRetryHandler(HttpRequestRetryHandler)
-  // new PoolingHttpClientConnectionManager()
 }
