@@ -1,3 +1,3 @@
 package data.http
 
-case class Request()
+case class HttpRequest()
