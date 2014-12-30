@@ -11,7 +11,7 @@ import data.config.Config
 
 import java.nio.charset.Charset
 import org.apache.http.config.ConnectionConfig
-import org.apache.http.impl.client.{CloseableHttpClient, HttpClientBuilder}
+import org.apache.http.impl.client.{BasicCookieStore, CloseableHttpClient, HttpClientBuilder}
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager
 trait ApacheHttpClient extends HttpClient {
   private[this] val config = Config.default
@@ -35,6 +35,56 @@ trait ApacheHttpClient extends HttpClient {
 
     builder.setUserAgent(config.getString("http.user-agent"))
 
+    // import org.apache.http.protocol.BasicHttpContext
+    // private[this] val localContext: HttpContext = new BasicHttpContext
+
+    // catch SSLPeerUnverifiedException
+    // val resp = try { httpclient.execute(request, localContext) } catch { case e: Throwable => retryFailedHandshake(request, sslRetryAmount) }
+
+    // actually, i think it's better to buffer these bytes to disk and pass along that reference.
+    // then we don't store all these bytes in memory
+
+    // val bytes = readToBytesAndClose(resp.getEntity.getContent)
+    // val respContent = new ByteArrayInputStream(bytes)
+    // val allHeaders = resp.getAllHeaders.toList
+    //   (header.getName -> Seq(header.getValue)
+
+    // private[this] val cookieStore = new BasicCookieStore()
+    // localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore)
+
+    // proxy foreach { case FetchProxy(host, port) =>
+    //   val socksaddr = new InetSocketAddress(host, port);
+    //   localContext.setAttribute("socks.address", socksaddr)
+    // }
+
+    // val requestConfig = RequestConfig
+    //   .custom
+    //   .setConnectionRequestTimeout(httpConnectionRequestTimeout) // time waiting for a connection from the pool
+    //   .setConnectTimeout(httpConnectTimeout) // time waiting to connect to a host
+    //   .setSocketTimeout(httpSocketTimeout) // time waiting for data to be received from a host
+    //   .setExpectContinueEnabled(false)
+    //   .setCircularRedirectsAllowed(true)
+    //   .build
+
+    // val socketConfig = SocketConfig
+    //   .custom
+    //   .setSoTimeout(httpSocketTimeout)
+    //   .setTcpNoDelay(true)
+    //   .build
+
+    // val c = HttpClients.custom
+    //   .setConnectionManager(connectionManager)
+    //   .setRequestExecutor(new InstrumentedHttpRequestExecutor(metricRegistry, HostMetricNameStrategy))
+    //   .setDefaultSocketConfig(socketConfig)
+    //   .setDefaultRequestConfig(requestConfig)
+
+    // val dc = new DecompressingHttpClient(c)
+
+    // if (httpCachingEnabled)
+    //   new CachingHttpClient(dc)
+    // else
+    //   dc
+
     // needed?
     // setDefaultSocketConfig(SocketConfig)
     // setConnectionTimeToLive(connTimeToLive, connTimeToLiveTimeUnit)
@@ -47,7 +97,7 @@ trait ApacheHttpClient extends HttpClient {
     // setSSLSocketFactory
 
     // later
-    c// setTargetAuthenticationStrategy(AuthenticationStrategy)
+    // setTargetAuthenticationStrategy(AuthenticationStrategy)
     // setProxyAuthenticationStrategy(AuthenticationStrategy)
 
     new Client(builder.build())
