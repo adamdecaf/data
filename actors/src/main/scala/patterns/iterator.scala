@@ -9,7 +9,7 @@ object IteratorProtocol {
   case object Shutdown
 }
 
-trait IteratorActorSource[T] extends Actor with ActorLogging with RecordDistinctSenders { me =>
+abstract class IteratorActorSource[T] extends Actor with ActorLogging with RecordDistinctSenders { me =>
   protected def lookupMessageBatch(): Iterator[T]
 
   final def receive: Receive = waitingForAsk(lookupMessageBatch())
@@ -40,7 +40,7 @@ trait IteratorActorSource[T] extends Actor with ActorLogging with RecordDistinct
   }
 }
 
-trait IteratorActorSink[T] extends Actor with ActorLogging {
+abstract class IteratorActorSink[T](source: ActorRef) extends Actor with ActorLogging {
   protected def processMessage(message: T): Unit
   protected def timeoutWhenNoItemsAreFound: Duration
 
@@ -64,6 +64,7 @@ trait IteratorActorSink[T] extends Actor with ActorLogging {
     case IteratorProtocol.NextItem(item: T) =>
       log.debug(s"Got item ${item} to process.")
       processMessage(item)
+      source ! IteratorProtocol.AskingForNextMessage
 
     case IteratorProtocol.NoItemsToGive =>
       import context.dispatcher
