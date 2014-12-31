@@ -1,4 +1,4 @@
-package data.actors.patterns
+package data.actors
 import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Props}
 import scala.concurrent.duration.{Duration, FiniteDuration}
 
@@ -40,6 +40,7 @@ abstract class IteratorActorSource[T] extends Actor with ActorLogging with Recor
   }
 }
 
+// todo: TypedActors
 abstract class IteratorActorSink[T](source: ActorRef) extends Actor with ActorLogging {
   protected def processMessage(message: T): Unit
   protected def timeoutWhenNoItemsAreFound: Duration
