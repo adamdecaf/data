@@ -14,4 +14,8 @@ lazy val httpServer = bannoProject("http", "data-http-server", file("./http/serv
 
 lazy val postgres = bannoProject("postgres", "data-postgres").dependsOn(common, config)
 
+// deplyables
+
+lazy val crawler = bannoProject("crawler", "data-crawler").dependsOn(actors, config, common, httpClient, postgres)
+
 scalaVersion := "2.11.4"
