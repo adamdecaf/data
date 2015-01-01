@@ -8,6 +8,13 @@ import org.squeryl.PrimitiveTypeMode._
 object PostgresDriverSpec extends Specification {
   sequential
 
+  "create test_table" in new context {
+    driver.withSession {
+      Migration.migrate()
+    }
+    ok
+  }
+
   "clear out the table" in new context {
     driver.withSession {
       Tables.test_table.deleteWhere(_.id === "1")
@@ -16,8 +23,6 @@ object PostgresDriverSpec extends Specification {
 
   "find us a connection to use" in new context {
     driver.withSession {
-      Migration.migrate()
-
       val findNothing =
         from(Tables.test_table)(t =>
           where(t.id === "1")
