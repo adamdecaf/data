@@ -47,10 +47,16 @@ abstract class IteratorActorSink[T](source: ActorRef) extends Actor with ActorLo
 
   private case object EndNoItemTimeout
 
+  override def preStart(): Unit = {
+    log.debug(s"Asking source for items")
+    source ! IteratorProtocol.AskingForNextMessage
+  }
+
   final def receive: Receive = waitForItemsOrShutdown()
 
   private[this] def waitForTimeoutAfterNoItemsGiven(): Receive = {
     case EndNoItemTimeout =>
+      source ! IteratorProtocol.AskingForNextMessage
       context.unbecome()
 
     case IteratorProtocol.Shutdown =>
