@@ -5,18 +5,20 @@ import data.config.Config
 // import org.apache.http.NameValuePair
 // import org.apache.http.client.entity.UrlEncodedFormEntity
 // import org.apache.http.client.methods.{CloseableHttpResponse, HttpGet, HttpPost}
-// import org.apache.http.impl.client.{CloseableHttpClient, HttpClients}
+
 // import org.apache.http.message.BasicNameValuePair
 // import org.apache.http.util.EntityUtils
 
 import java.nio.charset.Charset
 import org.apache.http.config.ConnectionConfig
-import org.apache.http.impl.client.{BasicCookieStore, CloseableHttpClient, HttpClientBuilder}
+import org.apache.http.impl.client.HttpClientBuilder
+import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager
-trait ApacheHttpClient extends HttpClient {
+
+object ApacheHttpClient {
   private[this] val config = Config.default
 
-  lazy val httpClient = {
+  lazy val httpClient: CloseableHttpClient = {
     val builder = HttpClientBuilder.create()
 
     builder.setConnectionManager {
@@ -100,10 +102,6 @@ trait ApacheHttpClient extends HttpClient {
     // setTargetAuthenticationStrategy(AuthenticationStrategy)
     // setProxyAuthenticationStrategy(AuthenticationStrategy)
 
-    new Client(builder.build())
-  }
-
-  protected class Client(underlying: CloseableHttpClient) extends Http {
-    def GET: HttpRequestBuilder = new ApacheHttpClientRequestBuilder()
+    builder.build()
   }
 }
