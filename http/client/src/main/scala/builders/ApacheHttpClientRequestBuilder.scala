@@ -26,7 +26,7 @@ private object ApacheHttpClientRequestBuilder extends BlockingExecutionContext w
   private[this] val config = Config.default
 
   def execute(request: HttpUriRequest): Future[HttpResponse] = {
-    val maxRetries = config.getInt("http.max-retries")
+    val maxRetries = config.getInt("http.client.max-retries")
     def attempt(tries: Int = 0): Future[HttpResponse] = {
       if (tries >= maxRetries) {
         Future.failed(TooManyRetriesException)
@@ -43,7 +43,7 @@ private object ApacheHttpClientRequestBuilder extends BlockingExecutionContext w
 
             val filename = UUID()
             val tempDir = Option(System.getProperty("java.io.tmpdir")).getOrElse("/tmp")
-            val basePath = config.getString("http.responses.base-dir")
+            val basePath = config.getString("http.client.responses.base-dir")
 
             val fullFilePath = {
               val prefix = if (tempDir.endsWith("/")) {
