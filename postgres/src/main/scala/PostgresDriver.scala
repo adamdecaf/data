@@ -3,7 +3,7 @@ import java.sql.Connection
 import org.squeryl.{PrimitiveTypeMode, Session}
 import org.squeryl.adapters.PostgreSqlAdapter
 
-trait PostgresDriver {
+class PostgresDriver {
   final def findSession: Session = {
     val connection = PostgresConnectionPooling.getConnection()
     Session.create(connection, new PostgreSqlAdapter)

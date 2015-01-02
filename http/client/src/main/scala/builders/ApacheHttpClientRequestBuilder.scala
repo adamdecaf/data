@@ -11,6 +11,7 @@ import javax.net.ssl.{SSLHandshakeException, SSLPeerUnverifiedException}
 import org.apache.http.conn.HttpHostConnectException
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.client.methods.HttpUriRequest
+import scala.language.postfixOps
 
 final class ApacheHttpClientRequestBuilder(request: HttpUriRequest) extends HttpRequestBuilder {
 
@@ -19,15 +20,16 @@ final class ApacheHttpClientRequestBuilder(request: HttpUriRequest) extends Http
     new ApacheHttpClientRequestBuilder(request)
   }
 
-  final def execute(): Future[HttpResponse] = ApacheHttpClientRequestBuilder.execute(request)
+  final def execute(): Future[RawHttpResponse] = ApacheHttpClientRequestBuilder.execute(request)
 }
 
 private object ApacheHttpClientRequestBuilder extends BlockingExecutionContext with Logging {
   private[this] val config = Config.default
 
-  def execute(request: HttpUriRequest): Future[HttpResponse] = {
+  def execute(request: HttpUriRequest): Future[RawHttpResponse] = {
     val maxRetries = config.getInt("http.client.max-retries")
-    def attempt(tries: Int = 0): Future[HttpResponse] = {
+
+    def attempt(tries: Int = 0): Future[RawHttpResponse] = {
       if (tries >= maxRetries) {
         Future.failed(TooManyRetriesException)
       } else {
@@ -75,7 +77,7 @@ private object ApacheHttpClientRequestBuilder extends BlockingExecutionContext w
               list map { h => (h.getName -> h.getValue) } toMap
             }
 
-            HttpResponse(
+            RawHttpResponse(
               dataFilepath = fullFilePath,
               contentLength = contentLength,
               statusCode = statusCode,

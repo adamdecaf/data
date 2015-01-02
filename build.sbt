@@ -1,6 +1,6 @@
 import com.banno._
 
-lazy val root = Project("data-root", file(".")).aggregate(actors, aws, crawler, common, config, httpClient, httpServer, postgres)
+lazy val root = Project("data-root", file(".")).aggregate(actors, aws, crawler, common, config, httpClient, httpServer, httpStorge, postgres)
 
 lazy val common = Project("common", file("./common"))
 
@@ -10,15 +10,17 @@ lazy val actors = Project("actors", file("./actors")).dependsOn(common, config)
 
 lazy val aws = Project("aws", file("./aws")).dependsOn(common, config)
 
-lazy val httpClient = Project("http", file("./http/client")).dependsOn(common, config, actors)
+lazy val httpClient = Project("http-client", file("./http/client")).dependsOn(actors, common, config, httpServer)
 
-lazy val httpServer = Project("http", file("./http/server")).dependsOn(common, config)
+lazy val httpServer = Project("http-server", file("./http/server")).dependsOn(actors, common, config, httpStorge)
+
+lazy val httpStorge = Project("http-storage", file("./http/storage")).dependsOn(common, config, postgres)
 
 lazy val postgres = Project("postgres", file("./postgres")).dependsOn(common, config)
 
 // deplyables
 
-lazy val crawler = Project("crawler", file("./crawler")).dependsOn(actors, config, common, httpClient, postgres)
+lazy val crawler = Project("crawler", file("./crawler")).dependsOn(actors, config, common, httpClient, httpStorge, postgres)
 
 lazy val extractor = Project("extractor", file("./extractor")).dependsOn(actors, aws, config, common, postgres)
 

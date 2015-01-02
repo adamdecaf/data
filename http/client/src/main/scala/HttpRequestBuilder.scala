@@ -4,7 +4,7 @@ import org.apache.http.client.methods.{HttpGet, HttpPost}
 
 trait HttpRequestBuilder {
   def addHeader(key: String, value: String): HttpRequestBuilder
-  def execute(): Future[HttpResponse]
+  def execute(): Future[RawHttpResponse]
 }
 
 object HttpRequestBuilder {
