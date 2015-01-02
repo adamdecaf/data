@@ -9,7 +9,6 @@ import com.amazonaws.services.s3.model._
 import org.apache.commons.io.IOUtils
 
 object S3Client {
-  // todo: pooling support?
   lazy val create: S3Client = new S3Client(AWSConfig.awsCredentials, AWSConfig.awsConfig)
 }
 
