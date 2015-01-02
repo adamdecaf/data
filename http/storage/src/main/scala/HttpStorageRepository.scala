@@ -12,18 +12,19 @@ trait HttpStorageRepository {
 
 trait PostgresHttpStorageRepository extends HttpStorageRepository with PrimitiveTypeMode {
   import SquerylConversions.time._
+  import HttpStorageSchema._
 
   def getHttpExchange(httpExchangeId: String): Option[HttpExchange] = {
     def lookupRequest(): Option[HttpRequest] =
       httpStorageDriver.withSession {
-        from(HttpStorageSchema.requests)(h =>
+        from(HttpStorageSchema.Tables.requests)(h =>
           where(h.httpExchangeId === httpExchangeId)
           select(h)).page(0,1).headOption
       }
 
     def lookupResponse(): Option[HttpResponse] =
       httpStorageDriver.withSession {
-        from(HttpStorageSchema.responses)(h =>
+        from(HttpStorageSchema.Tables.responses)(h =>
           where(h.httpExchangeId === httpExchangeId)
           select(h)).page(0,1).headOption
       }
@@ -36,26 +37,26 @@ trait PostgresHttpStorageRepository extends HttpStorageRepository with Primitive
 
   def getHttpRequest(httpRequestId: String): Option[HttpRequest] =
     httpStorageDriver.withSession {
-      from(HttpStorageSchema.requests)(h =>
+      from(HttpStorageSchema.Tables.requests)(h =>
         where(h.httpRequestId === httpRequestId)
         select(h)).page(0,1).headOption
     }
 
   def getHttpResponse(httpResponseId: String): Option[HttpResponse] =
     httpStorageDriver.withSession {
-      from(HttpStorageSchema.responses)(h =>
+      from(HttpStorageSchema.Tables.responses)(h =>
         where(h.httpResponseId === httpResponseId)
         select(h)).page(0,1).headOption
     }
 
   def writeHttpRequest(req: HttpRequest): Unit =
     httpStorageDriver.withSession {
-      HttpStorageSchema.requests.insert(req)
+      HttpStorageSchema.Tables.requests.insert(req)
     }
 
   def writeHttpResponse(res: HttpResponse): Unit =
     httpStorageDriver.withSession {
-      HttpStorageSchema.responses.insert(res)
+      HttpStorageSchema.Tables.responses.insert(res)
     }
 
   protected lazy val httpStorageDriver = new PostgresDriver

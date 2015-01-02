@@ -18,7 +18,7 @@ object HttpStorageRepositorySpec extends Specification {
 
     writeHttpResponse(res)
     getHttpExchange(httpExchangeId) must beSome(HttpExchange(httpExchangeId, req, res))
-    getHttpRequest(httpRequestId) must beSome(res)
+    getHttpRequest(httpRequestId) must beSome(req)
 
     // missing, wrong on purpose
     getHttpExchange(httpRequestId) must beNone
