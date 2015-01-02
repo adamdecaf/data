@@ -1,6 +1,6 @@
 import com.banno._
 
-lazy val root = bannoRootProject("data-root").aggregate(common, config, actors, aws, httpClient, httpServer, postgres, crawler)
+lazy val root = bannoRootProject("data-root").aggregate(actors, aws, crawler, common, config, httpClient, httpServer, postgres)
 
 lazy val common = bannoProject("common", "data-common")
 
@@ -19,5 +19,7 @@ lazy val postgres = bannoProject("postgres", "data-postgres").dependsOn(common, 
 // deplyables
 
 lazy val crawler = bannoProject("crawler", "data-crawler").dependsOn(actors, config, common, httpClient, postgres)
+
+lazy val extractor = bannoProject("extractor", "data-extractor").dependsOn(actors, aws, config, common, postgres)
 
 scalaVersion := "2.11.4"
