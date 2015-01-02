@@ -17,8 +17,9 @@ if not exists(select 1 from pg_tables where tablename='http_responses') then
           http_response_id varchar(36) primary key not null,
           http_exchange_id varchar(36) not null,
           uri varchar(36) not null,
-          time timestamp(0) not null,
-          s3_object_key varchar(256) not null
+          status_code int not null,
+          s3_object_key varchar(256) not null,
+          time timestamp(0) not null
    );
 end if;
 
