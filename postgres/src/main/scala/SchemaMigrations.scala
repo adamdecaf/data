@@ -28,7 +28,7 @@ trait SchemaMigration extends PostgresDriver with Logging {
         }
       }
     } else {
-      // todo: log line about how this is disbled
+      log.debug(s"Postgres migrations are disabled.")
     }
   }
 
