@@ -9,7 +9,8 @@ import com.amazonaws.services.s3.model._
 import org.apache.commons.io.IOUtils
 
 object S3Client {
-  def create: S3Client = new S3Client(AWSConfig.awsCredentials, AWSConfig.awsConfig)
+  // todo: pooling support?
+  lazy val create: S3Client = new S3Client(AWSConfig.awsCredentials, AWSConfig.awsConfig)
 }
 
 final class S3Client(credentials: BasicAWSCredentials, clientConfig: ClientConfiguration) extends Logging {
@@ -33,18 +34,20 @@ final class S3Client(credentials: BasicAWSCredentials, clientConfig: ClientConfi
         log.warn("Giving up trying to s3 S3Object under bucket: '${bucket}' and key: '${key}' due to too many retries.")
         None
       } else {
-
-        lazy val obj = client.getObject(request)
         try {
+          val obj = client.getObject(request)
           val bytes = IOUtils.toByteArray(obj.getObjectContent)
+          obj.close
           Some(new ByteArrayInputStream(bytes))
         } catch {
           case err: AmazonS3Exception =>
-            log.warn("Got an exception from S3 when reading an object scheduling for a retry.", err)
-            attempt(tries + 1)
-
-        } finally {
-          obj.close
+            if (err.getMessage.contains("The specified key does not exist")) {
+              log.debug(s"The object under '${key}' in bucket '${bucket}' doesn't exist.")
+              None
+            } else {
+              log.warn("Got an exception from S3 when reading an object scheduling for a retry.", err)
+              attempt(tries + 1)
+            }
         }
       }
     }
@@ -78,6 +81,8 @@ final class S3Client(credentials: BasicAWSCredentials, clientConfig: ClientConfi
   }
 
   def deleteItems(bucket: String, itemNames: String*): Unit = {
-    itemNames.foreach(client.deleteObject(bucket, _))
+    if (bucket.nonEmpty) {
+      itemNames.filter(_.nonEmpty).foreach(client.deleteObject(bucket, _))
+    }
   }
 }
