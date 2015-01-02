@@ -1,25 +1,27 @@
 import com.banno._
 
-lazy val root = bannoRootProject("data-root").aggregate(actors, aws, crawler, common, config, httpClient, httpServer, postgres)
+lazy val root = Project("data-root", file(".")).aggregate(actors, aws, crawler, common, config, httpClient, httpServer, postgres)
 
-lazy val common = bannoProject("common", "data-common")
+lazy val common = Project("common", file("./common"))
 
-lazy val config = bannoProject("config", "data-config").dependsOn(common)
+lazy val config = Project("config", file("./config")).dependsOn(common)
 
-lazy val actors = bannoProject("actors", "data-actors").dependsOn(common, config)
+lazy val actors = Project("actors", file("./actors")).dependsOn(common, config)
 
-lazy val aws = bannoProject("aws", "data-aws").dependsOn(common, config)
+lazy val aws = Project("aws", file("./aws")).dependsOn(common, config)
 
-lazy val httpClient = bannoProject("http", "data-http-client", file("./http/client")).dependsOn(common, config, actors)
+lazy val httpClient = Project("http", file("./http/client")).dependsOn(common, config, actors)
 
-lazy val httpServer = bannoProject("http", "data-http-server", file("./http/server")).dependsOn(common, config)
+lazy val httpServer = Project("http", file("./http/server")).dependsOn(common, config)
 
-lazy val postgres = bannoProject("postgres", "data-postgres").dependsOn(common, config)
+lazy val postgres = Project("postgres", file("./postgres")).dependsOn(common, config)
 
 // deplyables
 
-lazy val crawler = bannoProject("crawler", "data-crawler").dependsOn(actors, config, common, httpClient, postgres)
+lazy val crawler = Project("crawler", file("./crawler")).dependsOn(actors, config, common, httpClient, postgres)
 
-lazy val extractor = bannoProject("extractor", "data-extractor").dependsOn(actors, aws, config, common, postgres)
+lazy val extractor = Project("extractor", file("./extractor")).dependsOn(actors, aws, config, common, postgres)
 
 scalaVersion := "2.11.4"
+
+BannoPrompt.settings
