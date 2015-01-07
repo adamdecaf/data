@@ -1,6 +1,6 @@
 import com.banno._
 
-lazy val root = Project("data-root", file(".")).aggregate(actors, aws, crawler, common, config, httpClient, httpServer, httpStorge, postgres)
+lazy val root = Project("data-root", file(".")).aggregate(actors, aws, crawler, common, config, httpClient, httpServer, httpStorge, postgres, uriParsing)
 
 // libraries
 
@@ -14,7 +14,7 @@ lazy val aws = Project("aws", file("./aws")).dependsOn(common, config)
 
 // parsing
 
-lazy val parsingUri = Project("parsing", file("./parsing/uri")).dependsOn(common, config)
+lazy val uriParsing = Project("parsing", file("./parsing/uri")).dependsOn(common, config)
 
 // http
 
