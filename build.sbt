@@ -12,10 +12,6 @@ lazy val actors = Project("actors", file("./actors")).dependsOn(common, config)
 
 lazy val aws = Project("aws", file("./aws")).dependsOn(common, config)
 
-// parsing
-
-lazy val parsingUri = Project("parsing", file("./parsing/uri")).dependsOn(common, config)
-
 // http
 
 lazy val httpClient = Project("http-client", file("./http/client")).dependsOn(actors, common, config, httpServer)
