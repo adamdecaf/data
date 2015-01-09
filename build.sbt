@@ -1,6 +1,6 @@
 import com.banno._
 
-lazy val root = Project("data-root", file(".")).aggregate(actors, aws, crawler, common, config, httpClient, httpServer, httpStorge, postgres)
+lazy val root = Project("data-root", file(".")).aggregate(actors, aws, crawler, common, config, health, httpClient, httpServer, httpStorge, metrics, postgres)
 
 // libraries
 
@@ -11,6 +11,10 @@ lazy val config = Project("config", file("./config")).dependsOn(common)
 lazy val actors = Project("actors", file("./actors")).dependsOn(common, config)
 
 lazy val aws = Project("aws", file("./aws")).dependsOn(common, config)
+
+lazy val health = Project("health", file("./health")).dependsOn(common, config, httpServer)
+
+lazy val metrics = Project("metrics", file("./metrics")).dependsOn(actors, aws, common, config, postgres)
 
 // http
 
@@ -30,6 +34,6 @@ lazy val crawler = Project("crawler", file("./crawler")).dependsOn(actors, confi
 
 lazy val extractor = Project("extractor", file("./extractor")).dependsOn(actors, aws, config, common, postgres)
 
-scalaVersion := "2.11.4"
+scalaVersion := "2.11.5"
 
 BannoPrompt.settings

@@ -18,6 +18,7 @@ object Boot extends App
 // on response:
 // - encrypt and store in s3, postgres
 // - send html ids from ^ to extractor
+// - compress html as well
 
 // == extractor ==
 // pull out urls from html, make conical urls and insert new ones into "to crawl" table
